@@ -1,9 +1,9 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserData, ResponseUserData, UpdateUserData } from './types/type';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { hashingPassword } from 'src/utils/passwordUtils';
+import { comparePassword, hashingPassword } from 'src/utils/passwordUtils';
 
 @Injectable()
 export class UsersService {
@@ -62,6 +62,22 @@ export class UsersService {
         try {
             await this.userRepository.delete({ username: user.username });
             return { statusCode: HttpStatus.OK, message: "User deleted successfully." };
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async changePassword(user: User, oldPassword: string, newPassword: string, confirmPassword: string) {
+        const userExist = await this.userRepository.findOne({ where: { username: user.username } });
+        if (!(await comparePassword(oldPassword, userExist.password))) {
+            throw new ForbiddenException("Incorrect password.");
+        }
+        if (newPassword !== confirmPassword) {
+            throw new ForbiddenException("Password missmatch.");
+        }
+        try {
+            await this.userRepository.update({ username: user.username }, { password: await hashingPassword(newPassword) });
+            return { statusCode: HttpStatus.OK, message: "Password changed." };
         } catch (err) {
             console.error(err);
         }
