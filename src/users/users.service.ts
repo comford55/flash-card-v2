@@ -50,7 +50,20 @@ export class UsersService {
     }
 
     async updateUser(user: User, updateData: UpdateUserData) {
-        await this.userRepository.update({ username: user.username }, { ...updateData, updatedAt: new Date() });
-        return { statusCode: HttpStatus.OK, message: "User updated successfully."}
+        try {
+            await this.userRepository.update({ username: user.username }, { ...updateData, updatedAt: new Date() });
+            return { statusCode: HttpStatus.OK, message: "User updated successfully." };
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async deleteUser(user: User) {
+        try {
+            await this.userRepository.delete({ username: user.username });
+            return { statusCode: HttpStatus.OK, message: "User deleted successfully." };
+        } catch (err) {
+            console.error(err);
+        }
     }
 }

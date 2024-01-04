@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Request, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Request, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { UpdateUserDTO } from './dto/updateUser.dto';
@@ -32,5 +32,11 @@ export class UsersController {
     @UsePipes(new ValidationPipe({ transform: true }))
     async updateUser(@Request() req, @Body() updateUserDTO: UpdateUserDTO) {
         return await this.userService.updateUser(req, updateUserDTO);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete()
+    async deleteUser(@Request() req) {
+        return await this.userService.deleteUser(req.user);
     }
 }
