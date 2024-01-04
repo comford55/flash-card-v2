@@ -22,7 +22,6 @@ export class AuthService {
     async login(username: string, password: string) {
         try {
             const user = await this.usersService.findOne(username);
-            console.log(user, !(await comparePassword(password, user.password)))
             if (!user || !(await comparePassword(password, user.password))) {
                 throw new UnauthorizedException("Username or Password is invalid.");
             }
@@ -33,10 +32,10 @@ export class AuthService {
                     email: user.email
                 }
             }
-            return { accessToken: this.jwtService.signAsync(payload) }
+            return { accessToken: await this.jwtService.signAsync(payload) }
         } catch (err) {
             console.error(err);
-            // return err.response;
+            return err.response;
         }
 
     }
