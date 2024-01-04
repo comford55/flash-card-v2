@@ -32,14 +32,20 @@ export class UsersService {
     }
 
     async findOne(username: string): Promise<User> {
-        try {
-            const user = await this.userRepository.findOne({ where: { username: username } });
-            if (!user) {
-                throw new NotFoundException("User not found.");
-            }
-            return user;
-        } catch (err) {
-            console.error(err);
+        const user = await this.userRepository.findOne({ where: { username } });
+        if (!user) {
+            throw new NotFoundException("User not found.");
         }
+        return user;
+    }
+
+    // return user data without password field
+    async findByUsername(username: string): Promise<ResponseUserData> {
+        const user = await this.userRepository.findOne({ where: { username } });
+        if (!user) {
+            throw new NotFoundException("User not found.");
+        }
+        const { password, ...result } = user;
+        return result;
     }
 }

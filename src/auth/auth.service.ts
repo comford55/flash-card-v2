@@ -30,7 +30,7 @@ export class AuthService {
         }
         return {
             accessToken: await this.jwtService.signAsync(payload),
-            refreshToken: await this.jwtService.signAsync(payload, { expiresIn: '7d' })
+            refreshToken: await this.jwtService.signAsync(payload, { expiresIn: '7d' }) // TODO: try to add notbefore to prevent ddos of refreshToken
         };
     }
 

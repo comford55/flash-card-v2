@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request } from 'express';
 import { LocalAuthGuard } from 'src/auth/guards/local.guard';
 import { CreateUserDTO } from './dto/createUser.dto';
@@ -20,4 +20,11 @@ export class UsersController {
     async getUsers() {
         return await this.userService.getUsers();
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get(':username')
+    async getUserByUsername(@Param('username') username: string) {
+        return await this.userService.findByUsername(username);
+    }
+
 }
