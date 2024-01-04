@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserData, ResponseUserData } from './types/type';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateUserData, ResponseUserData, UpdateUserData } from './types/type';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -47,5 +47,10 @@ export class UsersService {
         }
         const { password, ...result } = user;
         return result;
+    }
+
+    async updateUser(user: User, updateData: UpdateUserData) {
+        await this.userRepository.update({ username: user.username }, { ...updateData, updatedAt: new Date() });
+        return { statusCode: HttpStatus.OK, message: "User updated successfully."}
     }
 }

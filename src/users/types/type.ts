@@ -7,3 +7,10 @@ export type CreateUserData = {
 }
 
 export type ResponseUserData = Omit<CreateUserData, 'password'>
+
+export type UpdateUserData = {
+    username?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+}
