@@ -10,8 +10,8 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @Post('login')
     // @UsePipes(new ValidationPipe({ transform: true }))
-    async login(@Request() req) {
-        return await this.authService.login(req.user);
+    async localLogin(@Request() req) {
+        return await this.authService.localLogin(req.user);
     }
 
     // implement refresh token
