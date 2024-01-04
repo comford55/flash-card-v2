@@ -18,4 +18,14 @@ export class UsersService {
             console.error(err);
         }
     }
+
+    async getUsers(): Promise<ResponseUserData[]> {
+        try {
+            const users = await this.userRepository.find();
+            const results = users.map(user => { const { password, ...data } = user; return data; })
+            return results;
+        } catch (err) {
+            console.error(err);
+        }
+    }
 }
