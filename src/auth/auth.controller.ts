@@ -10,7 +10,6 @@ export class AuthController {
     @Post('login')
     // @UsePipes(new ValidationPipe({ transform: true }))
     async login(@Request() req) {
-        // return await this.authService.login(loginDTO.username, loginDTO.password);
         return await this.authService.login(req.user);
     }
 }

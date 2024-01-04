@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { LocalAuthGuard } from 'src/strategies/guards/local.guard';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { UsersService } from './users.service';
+import { JwtAuthGuard } from 'src/strategies/guards/jwt.guard';
 
 @Controller('users')
 export class UsersController {
@@ -14,7 +15,7 @@ export class UsersController {
         return await this.userService.createUser(userDTO);
     }
 
-    // @UseGuards(LocalAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getUsers(@Req() req: Request) {
         return await this.userService.getUsers();
