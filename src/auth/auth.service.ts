@@ -34,7 +34,16 @@ export class AuthService {
         };
     }
 
-    async refreshToken(token: string) {
-        const verify = await this.jwtService.verifyAsync(token);
+    async refreshToken(user: User) {
+        const payload = {
+            username: user.username,
+            sub: {
+                id: user.id,
+                email: user.email
+            }
+        }
+        return {
+            accessToken: await this.jwtService.signAsync(payload)
+        }
     }
 }

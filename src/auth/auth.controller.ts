@@ -1,6 +1,7 @@
 import { Controller, Post, Req, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from 'src/auth/guards/local.guard';
+import { RefreshJwtAuthGuard } from './guards/refresh.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -14,8 +15,9 @@ export class AuthController {
     }
 
     // implement refresh token
+    @UseGuards(RefreshJwtAuthGuard)
     @Post('refresh')
-    async refreshToken(token: string) {
-        return await this.authService.refreshToken(token);
+    async refreshToken(@Request() req) {
+        return await this.authService.refreshToken(req.user);
     }
 }
