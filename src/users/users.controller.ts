@@ -1,23 +1,23 @@
 import { Body, Controller, Get, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request } from 'express';
-import { LocalAuthGuard } from 'src/strategies/guards/local.guard';
+import { LocalAuthGuard } from 'src/auth/guards/local.guard';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { UsersService } from './users.service';
-import { JwtAuthGuard } from 'src/strategies/guards/jwt.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('users')
 export class UsersController {
     constructor(private userService: UsersService) { }
 
-    @Post('create')
+    @Post('signup')
     @UsePipes(new ValidationPipe({ transform: true }))
-    async createUser(@Body() userDTO: CreateUserDTO) {
+    async signUp(@Body() userDTO: CreateUserDTO) {
         return await this.userService.createUser(userDTO);
     }
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getUsers(@Req() req: Request) {
+    async getUsers() {
         return await this.userService.getUsers();
     }
 }

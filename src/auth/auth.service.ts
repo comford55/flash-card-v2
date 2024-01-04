@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -28,6 +28,13 @@ export class AuthService {
                 email: user.email
             }
         }
-        return { accessToken: await this.jwtService.signAsync(payload) };
+        return {
+            accessToken: await this.jwtService.signAsync(payload),
+            refreshToken: await this.jwtService.signAsync(payload, { expiresIn: '7d' })
+        };
+    }
+
+    async refreshToken(token: string) {
+        const verify = await this.jwtService.verifyAsync(token);
     }
 }
