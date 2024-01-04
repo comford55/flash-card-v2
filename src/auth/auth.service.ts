@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { comparePassword } from 'src/utils/passwordUtils';
 
@@ -19,24 +20,14 @@ export class AuthService {
         return null;
     }
 
-    async login(username: string, password: string) {
-        try {
-            const user = await this.usersService.findOne(username);
-            if (!user || !(await comparePassword(password, user.password))) {
-                throw new UnauthorizedException("Username or Password is invalid.");
+    async login(user: User) {
+        const payload = {
+            username: user.username,
+            sub: {
+                id: user.id,
+                email: user.email
             }
-            const payload = {
-                username: user.username,
-                sub: {
-                    id: user.id,
-                    email: user.email
-                }
-            }
-            return { accessToken: await this.jwtService.signAsync(payload) }
-        } catch (err) {
-            console.error(err);
-            return err.response;
         }
-
+        return { accessToken: await this.jwtService.signAsync(payload) };
     }
 }

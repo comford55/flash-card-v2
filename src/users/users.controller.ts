@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Post, UsePipes, ValidationPipe } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { Body, Controller, Get, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Request } from 'express';
+import { LocalAuthGuard } from 'src/strategies/guards/local.guard';
 import { CreateUserDTO } from './dto/createUser.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -12,8 +14,9 @@ export class UsersController {
         return await this.userService.createUser(userDTO);
     }
 
+    // @UseGuards(LocalAuthGuard)
     @Get()
-    async getUsers() {
+    async getUsers(@Req() req: Request) {
         return await this.userService.getUsers();
     }
 }
